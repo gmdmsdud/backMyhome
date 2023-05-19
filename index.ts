@@ -4,6 +4,14 @@ import { Board } from "./Board.postgres";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
+import cors from 'cors';
+import dotenv from 'dotenv';
+const express = require('express')
+const app = express()
+
+app.use(cors()) 
+dotenv.config();
+
 // The GraphQL schema
 const typeDefs = `#graphql
   input CreateBoardInput {
@@ -48,15 +56,16 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  
 });
 
 const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "postgres",
-  password: "password",
-  database: "postgres2",
+  host: process.env.DB_HOST,
+  port:5432,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   synchronize: true,
   logging: true,
   entities: [Board],
